@@ -4,5 +4,6 @@ hash_map_tests
 dynamic_array_tests
 bitset_tests
 compile_commands.json
+bitset_tests.o
 otherfile.o
 .cache/

@@ -1,5 +1,7 @@
-#include "../include/bitset.h"
 #include <assert.h>
+
+#define BITSET_IMPL
+#include "../include/bitset.h"
 
 int main(void) {
   BitSet_t bs;
