@@ -43,3 +43,4 @@ void bs_deinit(BitSet_t *bs) {
 
 #define BITSET_H
 #endif // BITSET_H
+
