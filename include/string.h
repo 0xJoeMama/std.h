@@ -5,7 +5,7 @@
 #define SS_IMPL
 #include "string_slice.h"
 
-DA_IMPL(char);
+DA_DECLARE_IMPL(char)
 typedef DynamicArray_t(char) String_t;
 
 int s_init(String_t *s, size_t initial_cap) {
@@ -39,7 +39,7 @@ void s_deinit(String_t *s) { da_deinit_char(s, NULL); }
 #else
 #include "string_slice.h"
 
-DA_DECLARE(char);
+DA_DECLARE(char)
 typedef DynamicArray_t(char) String_t;
 
 int s_init(String_t *s, size_t initial_cap);

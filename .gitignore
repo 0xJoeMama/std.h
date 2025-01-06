@@ -5,7 +5,11 @@ dynamic_array_tests
 bitset_tests
 allocator_tests
 compile_commands.json
+allocator_tests.o
+bitset_tests.o
 dynamic_array_tests.o
 hash_map_tests.o
 otherfile.o
+string_slice_tests.o
+string_tests.o
 .cache/
