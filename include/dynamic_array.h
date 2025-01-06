@@ -23,13 +23,16 @@
               size_t initial_cap);                                             \
   da_function(type *, da_get_raw, type, struct DynamicArray(type) * da,        \
               size_t idx);                                                     \
-  da_function(int, da_grow, type, struct DynamicArray(type) * da);             \
+  da_function(int, da_grow, type, struct DynamicArray(type) * da,              \
+              size_t new_cap);                                                 \
   da_function(int, da_push, type, struct DynamicArray(type) * da, type el);    \
   da_function(void, da_deinit, type, struct DynamicArray(type) * da);          \
   da_function(int, da_shrink, type, struct DynamicArray(type) * da);           \
   da_function(int, da_pop, type, struct DynamicArray(type) * da, type * dst);  \
   da_function(type *, da_get, type, struct DynamicArray(type) * da,            \
               size_t idx);                                                     \
+  da_function(int, da_expand_set, type, struct DynamicArray(type) * da,        \
+              size_t idx, type el);                                            \
   typedef struct DynamicArray(type) DynamicArray_t(type)
 
 // TODO: ifdef for implementation code
@@ -57,20 +60,21 @@
     return da->buf + idx;                                                      \
   }                                                                            \
                                                                                \
-  da_function(int, da_grow, type, struct DynamicArray(type) * da) {            \
-    void *new_buf = realloc(da->buf, da->cap * FUDGE * sizeof(type));          \
+  da_function(int, da_grow, type, struct DynamicArray(type) * da,              \
+              size_t new_cap) {                                                \
+    void *new_buf = realloc(da->buf, new_cap * sizeof(type));                  \
     if (!new_buf)                                                              \
       return 0;                                                                \
                                                                                \
     da->buf = (type *)new_buf;                                                 \
-    da->cap *= FUDGE;                                                          \
+    da->cap = new_cap;                                                         \
     return 1;                                                                  \
   }                                                                            \
                                                                                \
   da_function(int, da_push, type, struct DynamicArray(type) * da, type el) {   \
     if (da->len == da->cap) {                                                  \
       /* attempt to grow if we don't have room */                              \
-      if (!da_function_call(da_grow, type)(da))                                \
+      if (!da_function_call(da_grow, type)(da, FUDGE * da->cap))               \
         return 0;                                                              \
     }                                                                          \
     /* da_get_raw is blind so it might return an invalid address               \
@@ -111,14 +115,6 @@
     return 1;                                                                  \
   }                                                                            \
                                                                                \
-  da_function(type *, da_get, type, struct DynamicArray(type) * da,            \
-              size_t idx) {                                                    \
-    if (idx >= (da)->len)                                                      \
-      return NULL;                                                             \
-                                                                               \
-    return da_function_call(da_get_raw, type)(da, idx);                        \
-  }                                                                            \
-                                                                               \
   da_function(int, da_pop, type, struct DynamicArray(type) * da, type * dst) { \
     /* make sure we have at least 1 element */                                 \
     if (da->len == 0)                                                          \
@@ -136,12 +132,24 @@
     return 1;                                                                  \
   }                                                                            \
                                                                                \
+  da_function(int, da_expand_set, type, struct DynamicArray(type) * da,        \
+              size_t idx, type el) {                                           \
+    if (da->cap < idx + 1)                                                     \
+      if (!da_function_call(da_grow, type)(da, idx + 1))                       \
+        return 0;                                                              \
+                                                                               \
+    memcpy(&da->buf[idx], &el, sizeof(type));                                  \
+                                                                               \
+    return 1;                                                                  \
+  }                                                                            \
+                                                                               \
   typedef struct DynamicArray(type) DynamicArray_t(type)
 
 #define da_init(type) da_function_call(da_init, type)
-#define da_get(type) da_function_call(da_get, type)
+#define da_get(type) da_function_call(da_get_raw, type)
 #define da_push(type) da_function_call(da_push, type)
 #define da_pop(type) da_function_call(da_pop, type)
+#define da_expand_set(type) da_function_call(da_expand_set, type)
 #define da_deinit(type) da_function_call(da_deinit, type)
 
 #define DA_NEW_IMPL

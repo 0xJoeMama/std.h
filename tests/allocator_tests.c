@@ -1,3 +1,4 @@
+#include <assert.h>
 #define ALLOC_IMPL
 #include "../include/allocator.h"
 
@@ -7,7 +8,6 @@ struct StackStruct {
 };
 
 int main(void) {
-  static int buf[4096];
   Mallocator_t mallocator = mallocator_get();
 
   ArenaAllocator_t arena;

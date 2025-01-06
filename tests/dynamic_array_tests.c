@@ -1,4 +1,5 @@
 #include "../include/dynamic_array.h"
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -22,9 +23,7 @@ DA_IMPL(DynamicArray_t(Asd_t));
 // array of arrays of arrays
 DA_IMPL(DynamicArray_t(DynamicArray_t(Asd_t)));
 
-void asd_t_deinit(Asd_t asd) {
-  free(asd.y);
-}
+void asd_t_deinit(Asd_t asd) { free(asd.y); }
 
 int main(void) {
   DynamicArray_t(int) da;
@@ -64,11 +63,18 @@ int main(void) {
   // Hey! Vsauce. Michael here.
   // *This* is a string. Or is it?
   DynamicArray_t(char) is_this_a_string;
-  if (!da_init(char)(&is_this_a_string, 10)) return 1;
+  if (!da_init(char)(&is_this_a_string, 10))
+    return 1;
 
   char asd[] = "asdasdasdasdasd";
   for (size_t i = 0; i < sizeof(asd) / sizeof(char); i++)
     da_push(char)(&is_this_a_string, asd[i]);
+
+  if (!da_expand_set(char)(&is_this_a_string, 100, 42)) {
+    da_deinit(char)(&is_this_a_string, NULL);
+    return 1;
+  }
+  assert(*da_get_raw_char(&is_this_a_string, 100) == 42 && "bad expand_set");
 
   da_deinit(char)(&is_this_a_string, NULL);
 
