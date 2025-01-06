@@ -14,11 +14,7 @@
 #define da_function_call(name, da_type) name##_##da_type
 
 #define DA_DECLARE(type)                                                       \
-  struct DynamicArray(type) {                                                  \
-    type *buf;                                                                 \
-    size_t cap;                                                                \
-    size_t len;                                                                \
-  };                                                                           \
+  struct DynamicArray(type);                                                   \
   da_function(int, da_init, type, struct DynamicArray(type) * da,              \
               size_t initial_cap);                                             \
   da_function(type *, da_get_raw, type, struct DynamicArray(type) * da,        \
@@ -26,7 +22,8 @@
   da_function(int, da_grow, type, struct DynamicArray(type) * da,              \
               size_t new_cap);                                                 \
   da_function(int, da_push, type, struct DynamicArray(type) * da, type el);    \
-  da_function(void, da_deinit, type, struct DynamicArray(type) * da);          \
+  da_function(void, da_deinit, type, struct DynamicArray(type) * da,           \
+              void (*destroy)(type));                                          \
   da_function(int, da_shrink, type, struct DynamicArray(type) * da);           \
   da_function(int, da_pop, type, struct DynamicArray(type) * da, type * dst);  \
   da_function(type *, da_get, type, struct DynamicArray(type) * da,            \

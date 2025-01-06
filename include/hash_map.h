@@ -11,6 +11,7 @@
 #define hm_declare_type_long(key, value) HashMap_##key##_##value##_t
 #define HashMap(key, value) hm_declare_type(key, value)
 #define HashMap_t(key, value) hm_declare_type_long(key, value)
+#define KVPair(key, value) KVPair_##key##_##value
 #define KVPair_t(key, value) KVPair_##key##_##value##_t
 #define hm_function(ret_type, name, key, value, ...)                           \
   ret_type name##_##key##_##value(__VA_ARGS__)
@@ -18,20 +19,8 @@
 #define hm_function_call(name, key, value) name##_##key##_##value
 
 #define HM_DECLARE(key, value)                                                 \
-  typedef struct {                                                             \
-    key k;                                                                     \
-    value v;                                                                   \
-    uint64_t hash;                                                             \
-    int occupied;                                                              \
-  } KVPair_t(key, value);                                                      \
-                                                                               \
-  struct HashMap(key, value) {                                                 \
-    KVPair_t(key, value) * buckets;                                            \
-    uint64_t (*hash)(key *);                                                   \
-    int (*eq)(key *, key *);                                                   \
-    size_t cap;                                                                \
-    size_t len;                                                                \
-  };                                                                           \
+  typedef struct KVPair(key, value) KVPair_t(key, value);                      \
+  struct HashMap(key, value);                                                  \
                                                                                \
   hm_function(int, hm_init, key, value, struct HashMap(key, value) * hm,       \
               size_t initial_cap, uint64_t (*hash)(key *),                     \
@@ -40,7 +29,8 @@
               value v);                                                        \
   hm_function(value *, hm_get, key, value, struct HashMap(key, value) * hm,    \
               key * k);                                                        \
-  hm_function(void, hm_deinit, key, value, struct HashMap(key, value) * hm);   \
+  hm_function(void, hm_deinit, key, value, struct HashMap(key, value) * hm,    \
+              void (*destroy)(KVPair_t(key, value)));                          \
   hm_function(int, hm_grow, key, value, struct HashMap(key, value) * hm);      \
   hm_function(int, hm_remove, key, value, struct HashMap(key, value) * hm,     \
               key * k, value * v);                                             \
@@ -50,7 +40,7 @@
   typedef struct HashMap(key, value) HashMap_t(key, value)
 
 #define HM_IMPL(key, value)                                                    \
-  typedef struct {                                                             \
+  typedef struct KVPair(key, value) {                                          \
     key k;                                                                     \
     value v;                                                                   \
     uint64_t hash;                                                             \
