@@ -14,7 +14,12 @@
 #define da_function_call(name, da_type) name##_##da_type
 
 #define DA_DECLARE(type)                                                       \
-  struct DynamicArray(type);                                                   \
+  struct DynamicArray(type) {                                                  \
+    type *buf;                                                                 \
+    size_t cap;                                                                \
+    size_t len;                                                                \
+  };                                                                           \
+                                                                               \
   da_function(int, da_init, type, struct DynamicArray(type) * da,              \
               size_t initial_cap);                                             \
   da_function(type *, da_get_raw, type, struct DynamicArray(type) * da,        \
@@ -30,16 +35,10 @@
               size_t idx);                                                     \
   da_function(int, da_expand_set, type, struct DynamicArray(type) * da,        \
               size_t idx, type el);                                            \
-  typedef struct DynamicArray(type) DynamicArray_t(type)
+  typedef struct DynamicArray(type) DynamicArray_t(type);
 
 // TODO: ifdef for implementation code
 #define DA_IMPL(type)                                                          \
-  struct DynamicArray(type) {                                                  \
-    type *buf;                                                                 \
-    size_t cap;                                                                \
-    size_t len;                                                                \
-  };                                                                           \
-                                                                               \
   da_function(int, da_init, type, struct DynamicArray(type) * da,              \
               size_t initial_cap) {                                            \
     da->buf = (type *)malloc(initial_cap * sizeof(type));                      \
@@ -138,9 +137,11 @@
     memcpy(&da->buf[idx], &el, sizeof(type));                                  \
                                                                                \
     return 1;                                                                  \
-  }                                                                            \
-                                                                               \
-  typedef struct DynamicArray(type) DynamicArray_t(type)
+  }
+
+#define DA_DECLARE_IMPL(type)                                                  \
+  DA_DECLARE(type)                                                             \
+  DA_IMPL(type)
 
 #define da_init(type) da_function_call(da_init, type)
 #define da_get(type) da_function_call(da_get_raw, type)

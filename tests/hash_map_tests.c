@@ -6,12 +6,12 @@
 
 int foo(void);
 
-HM_IMPL(char, int);
+HM_DECLARE_IMPL(char, int)
 
 uint64_t hash_char(char *c) { return *c; }
 int char_eq(char *a, char *b) { return *a == *b; }
 
-HM_IMPL(char, HashMap_t(char, int));
+HM_DECLARE_IMPL(char, HashMap_t(char, int))
 
 int main(void) {
   HashMap_t(char, int) map;

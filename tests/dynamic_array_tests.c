@@ -3,8 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
-DA_IMPL(int);
-DA_IMPL(char);
+DA_DECLARE_IMPL(int)
+DA_DECLARE_IMPL(char)
 
 typedef struct as {
   int x;
@@ -17,11 +17,11 @@ typedef struct {
 } Asd_t;
 
 // array
-DA_IMPL(Asd_t);
+DA_DECLARE_IMPL(Asd_t)
 // array of arrays
-DA_IMPL(DynamicArray_t(Asd_t));
+DA_DECLARE_IMPL(DynamicArray_t(Asd_t))
 // array of arrays of arrays
-DA_IMPL(DynamicArray_t(DynamicArray_t(Asd_t)));
+DA_DECLARE_IMPL(DynamicArray_t(DynamicArray_t(Asd_t)))
 
 void asd_t_deinit(Asd_t asd) { free(asd.y); }
 
