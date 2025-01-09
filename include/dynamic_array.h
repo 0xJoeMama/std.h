@@ -134,7 +134,6 @@
 #define da_get(type) da_function_call(da_get_raw, type)
 #define da_push(type) da_function_call(da_push, type)
 #define da_pop(type) da_function_call(da_pop, type)
-#define da_expand_set(type) da_function_call(da_expand_set, type)
 #define da_deinit(type) da_function_call(da_deinit, type)
 
 #define DA_NEW_IMPL

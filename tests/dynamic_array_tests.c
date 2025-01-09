@@ -70,12 +70,6 @@ int main(void) {
   for (size_t i = 0; i < sizeof(asd) / sizeof(char); i++)
     da_push(char)(&is_this_a_string, asd[i]);
 
-  if (!da_expand_set(char)(&is_this_a_string, 100, 42)) {
-    da_deinit(char)(&is_this_a_string, NULL);
-    return 1;
-  }
-  assert(*da_get_raw_char(&is_this_a_string, 100) == 42 && "bad expand_set");
-
   da_deinit(char)(&is_this_a_string, NULL);
 
   return 0;
