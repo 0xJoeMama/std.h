@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -22,6 +23,7 @@ Str_t ss_split_once(Str_t *s, char c);
 int ss_advance_once(Str_t *s);
 Str_t ss_advance(Str_t *s, size_t adv);
 int ss_starts_with(Str_t s1, Str_t s2);
+void ss_print(FILE* file, Str_t s);
 
 #ifdef SS_IMPL
 #include <ctype.h>
@@ -156,6 +158,13 @@ Str_t ss_advance(Str_t *s, size_t adv) {
   return res;
 }
 
+void ss_print(FILE* stream, Str_t s) {
+  while (s.len > 0) {
+    fputc(*s.s, stream);
+    s.s++;
+    s.len--;
+  }
+}
 #endif // IMPL_SS
 
 #define STRING_SLICE_H
