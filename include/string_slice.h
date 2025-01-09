@@ -19,6 +19,10 @@ Str_t ss_trim(Str_t s);
 Str_t ss_subslice(Str_t s, size_t start_inc, size_t end_exc);
 Str_t ss_split_once(Str_t *s, char c);
 
+int ss_advance_once(Str_t *s);
+Str_t ss_advance(Str_t *s, size_t adv);
+int ss_starts_with(Str_t s1, Str_t s2);
+
 #ifdef SS_IMPL
 #include <ctype.h>
 
@@ -121,6 +125,37 @@ Str_t ss_split_once(Str_t *s, char c) {
 
   return res;
 }
+
+int ss_advance_once(Str_t *s) {
+  if (s->len == 0)
+    return -1;
+
+  s->len--;
+  return *s->s++;
+}
+
+int ss_starts_with(Str_t s1, Str_t s2) {
+  if (s1.len < s2.len)
+    return 0;
+
+  while (s2.len > 0)
+    if (ss_advance_once(&s2) != ss_advance_once(&s1))
+      return 0;
+
+  return 1;
+}
+
+Str_t ss_advance(Str_t *s, size_t adv) {
+  if (s->len < adv)
+    return (Str_t){.len = 0, .s = NULL};
+
+  Str_t res = {.len = adv, .s = s->s};
+  s->s += adv;
+  s->len -= adv;
+
+  return res;
+}
+
 #endif // IMPL_SS
 
 #define STRING_SLICE_H
