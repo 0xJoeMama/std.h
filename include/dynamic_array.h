@@ -33,8 +33,6 @@
   da_function(int, da_pop, type, struct DynamicArray(type) * da, type * dst);  \
   da_function(type *, da_get, type, struct DynamicArray(type) * da,            \
               size_t idx);                                                     \
-  da_function(int, da_expand_set, type, struct DynamicArray(type) * da,        \
-              size_t idx, type el);                                            \
   typedef struct DynamicArray(type) DynamicArray_t(type);
 
 // TODO: ifdef for implementation code
@@ -124,17 +122,6 @@
     /* if shrinking fails it means nothing to us since our job is to just      \
     remove an element */                                                       \
     da_function_call(da_shrink, type)(da);                                     \
-                                                                               \
-    return 1;                                                                  \
-  }                                                                            \
-                                                                               \
-  da_function(int, da_expand_set, type, struct DynamicArray(type) * da,        \
-              size_t idx, type el) {                                           \
-    if (da->cap < idx + 1)                                                     \
-      if (!da_function_call(da_grow, type)(da, idx + 1))                       \
-        return 0;                                                              \
-                                                                               \
-    memcpy(&da->buf[idx], &el, sizeof(type));                                  \
                                                                                \
     return 1;                                                                  \
   }
