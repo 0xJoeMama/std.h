@@ -3,10 +3,12 @@ string_slice_tests
 hash_map_tests
 dynamic_array_tests
 bitset_tests
+json_tests
 compile_commands.json
 bitset_tests.o
 dynamic_array_tests.o
 hash_map_tests.o
+json_tests.o
 otherfile.o
 string_slice_tests.o
 string_tests.o

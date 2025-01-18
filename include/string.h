@@ -1,4 +1,5 @@
 #ifndef STRING_H
+#include <stdint.h>
 #include "dynamic_array.h"
 
 #ifdef STRING_IMPL
@@ -40,6 +41,30 @@ void s_clear(String_t *s) {
   // no need to call da_clear bc chars can't possible have a destructor
   s->len = 0;
 }
+
+
+// djb2 hashing algorithm
+uint64_t s_hash(String_t *s) {
+  uint64_t hash = 5381;
+  Str_t s_slice = s_str(s);
+  int c;
+
+  while ((c = ss_advance_once(&s_slice)))
+    hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+  return hash;
+}
+
+int s_eq(String_t *a, String_t *b) {
+  if (a->len != b->len)
+    return 0;
+
+  for (size_t i = 0; i < a->len; i++)
+    if (a->buf[i] != b->buf[i])
+      return 0;
+
+  return 1;
+}
 #else
 #include "string_slice.h"
 
@@ -53,6 +78,8 @@ int s_push_str(String_t *s, Str_t src);
 int s_push_cstr(String_t *s, const char *src);
 Str_t s_str(String_t *s);
 void s_deinit(String_t *s);
+uint64_t s_hash(String_t *s);
+int s_eq(String_t *a, String_t *b);
 
 #endif
 #define STRING_H

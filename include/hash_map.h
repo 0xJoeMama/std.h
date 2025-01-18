@@ -1,7 +1,5 @@
 #ifndef HM_H
-#include <assert.h>
 #include <inttypes.h>
-#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -89,8 +87,8 @@
   }                                                                            \
                                                                                \
   hm_function(int, hm_grow, key, value, struct HashMap(key, value) * hm) {     \
-    KVPair_t(key, value) *new_buckets =                                        \
-        calloc(hm->cap * FUDGE, sizeof(KVPair_t(key, value)));                 \
+    KVPair_t(key, value) *new_buckets = (KVPair_t(key, value) *)calloc(        \
+        hm->cap * FUDGE, sizeof(KVPair_t(key, value)));                        \
     if (!new_buckets)                                                          \
       return 0;                                                                \
                                                                                \
