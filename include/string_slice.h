@@ -1,8 +1,7 @@
 #ifndef STRING_SLICE_H
 
-#include <stdint.h>
-#include <stdio.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 
 typedef struct {
@@ -24,7 +23,10 @@ Str_t ss_split_once(Str_t *s, char c);
 char ss_advance_once(Str_t *s);
 Str_t ss_advance(Str_t *s, size_t adv);
 int ss_starts_with(Str_t s1, Str_t s2);
-void ss_print(FILE* file, Str_t s);
+#ifndef NO_IO
+#include <stdio.h>
+void ss_print(FILE *file, Str_t s);
+#endif
 int ss_advance_uint32(Str_t *s, uint32_t *i);
 
 #ifdef SS_IMPL
@@ -160,7 +162,7 @@ Str_t ss_advance(Str_t *s, size_t adv) {
   return res;
 }
 
-void ss_print(FILE* stream, Str_t s) {
+void ss_print(FILE *stream, Str_t s) {
   while (s.len > 0) {
     fputc(*s.s, stream);
     s.s++;
