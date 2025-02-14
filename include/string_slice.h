@@ -162,6 +162,7 @@ Str_t ss_advance(Str_t *s, size_t adv) {
   return res;
 }
 
+#ifndef NO_IO
 void ss_print(FILE *stream, Str_t s) {
   while (s.len > 0) {
     fputc(*s.s, stream);
@@ -169,6 +170,7 @@ void ss_print(FILE *stream, Str_t s) {
     s.len--;
   }
 }
+#endif
 
 int ss_advance_uint32(Str_t *s, uint32_t *i) {
   if (s->len == 0)
