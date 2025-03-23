@@ -37,7 +37,6 @@
               void (*destroy)(type));                                          \
   typedef struct DynamicArray(type) DynamicArray_t(type);
 
-// TODO: ifdef for implementation code
 #define DA_IMPL(type)                                                          \
   da_function(int, da_init, type, struct DynamicArray(type) * da,              \
               size_t initial_cap) {                                            \
